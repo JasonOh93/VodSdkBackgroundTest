@@ -69,6 +69,8 @@ class MainActivity : AppCompatActivity(){
         const val GALLERY_RESULT = 2
     }
 
+    val items : ArrayList<Uri> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -81,13 +83,7 @@ class MainActivity : AppCompatActivity(){
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
             ) {
-                if (setStoragePermission(
-                        this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
-                ) {
-                    onAlbum()
-                }
+                checkPermissionAndAlbum()
             }
         }
 
@@ -102,13 +98,19 @@ class MainActivity : AppCompatActivity(){
     private fun clickVideoView() {
         with(binding!!) {
             video1.setOnClickListener {
-                checkPermissionAndAlbum()
+                if(items.size >= 1) {
+                    openEditor(items[0])
+                }
             }
             video2.setOnClickListener {
-                checkPermissionAndAlbum()
+                if(items.size >= 2) {
+                    openEditor(items[1])
+                }
             }
             video3.setOnClickListener {
-                checkPermissionAndAlbum()
+                if(items.size >= 3) {
+                    openEditor(items[2])
+                }
             }
         }
     }
@@ -374,8 +376,6 @@ class MainActivity : AppCompatActivity(){
 
             Log.e(TAG, "onActivityResult: sadfsdfsa : ${intent.clipData?.getItemAt(0)?.uri}", )
             Log.e(TAG, "onActivityResult: sadfsdfsa : ${intent.clipData?.getItemAt(1)}", )
-
-            val items : ArrayList<Uri> = ArrayList<Uri>()
 
             intent.clipData?.apply {
                 for(i in 0 until this.itemCount) {
