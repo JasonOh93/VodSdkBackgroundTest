@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -90,23 +91,42 @@ class MainActivity : AppCompatActivity(){
             }
         }
 
-
-        binding!!.button2.setOnClickListener {
-            if (setStoragePermission(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) {
-                if (setStoragePermission(
-                        this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
-                ) {
-                    onAlbum()
-                }
-            }
+        binding!!.pvVodDetailVideo.videoSurfaceView?.setOnClickListener {
+            checkPermissionAndAlbum()
         }
 
+        clickVideoView()
+
+    }
+
+    private fun clickVideoView() {
+        with(binding!!) {
+            video1.setOnClickListener {
+                checkPermissionAndAlbum()
+            }
+            video2.setOnClickListener {
+                checkPermissionAndAlbum()
+            }
+            video3.setOnClickListener {
+                checkPermissionAndAlbum()
+            }
+        }
+    }
+
+    private fun checkPermissionAndAlbum() {
+        if (setStoragePermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        ) {
+            if (setStoragePermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) {
+                onAlbum()
+            }
+        }
     }
 
     private fun setAaa(uri: Uri?) {
@@ -144,6 +164,7 @@ class MainActivity : AppCompatActivity(){
         val intent = Intent()
         intent.type = "video/*"
         intent.action = Intent.ACTION_PICK
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, GALLERY_RESULT)
     }
 
@@ -307,6 +328,36 @@ class MainActivity : AppCompatActivity(){
                 it.outputMode = OutputMode.EXPORT_ONLY_SETTINGS_LIST
             }
 
+    private fun setVideoView(items : ArrayList<Uri>){
+
+        with(binding!!){
+            for(i in items.indices) {
+                when(i) {
+                    0 -> {
+                        video1.setVideoURI(items[i])
+                        video1.setOnPreparedListener {
+                            video1.start()
+                        }
+                    }
+                    1 -> {
+                        video2.setVideoURI(items[i])
+                        video2.setOnPreparedListener {
+                            video2.start()
+                        }
+                    }
+                    3 -> {
+                        video3.setVideoURI(items[i])
+                        video3.setOnPreparedListener {
+                            video3.start()
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
 
@@ -316,10 +367,25 @@ class MainActivity : AppCompatActivity(){
             // VideoEditer -> Use ImgLy
             // Open Editor with some uri in this case with an video selected from the system gallery.
 
-            val selectedVideo = intent?.data
-            if (selectedVideo != null) {
-                openEditor(selectedVideo)
+//            val selectedVideo = intent?.data
+//            if (selectedVideo != null) {
+//                openEditor(selectedVideo)
+//            }
+
+            Log.e(TAG, "onActivityResult: sadfsdfsa : ${intent.clipData?.getItemAt(0)?.uri}", )
+            Log.e(TAG, "onActivityResult: sadfsdfsa : ${intent.clipData?.getItemAt(1)}", )
+
+            val items : ArrayList<Uri> = ArrayList<Uri>()
+
+            intent.clipData?.apply {
+                for(i in 0 until this.itemCount) {
+                    items.add(this.getItemAt(i).uri)
+                }
             }
+
+            setVideoView(items)
+
+
 
             Log.e(TAG, "onActivityResult: Source video :: ${intent?.data}")
 
