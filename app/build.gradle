@@ -1,0 +1,117 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'ly.img.android.sdk'
+}
+
+// Configure the IMGLYPlugin
+imglyConfig {
+
+    vesdk {
+        enabled true
+        licencePath null
+    }
+
+    // Define the modules you are need
+    modules {
+
+        // Add all the UI modules you are need
+        include 'ui:video-trim'
+        include 'ui:core'
+        include 'ui:text'
+        include 'ui:focus'
+//        include 'ui:frame'
+        include 'ui:brush'
+        include 'ui:filter'
+        include 'ui:camera'
+        include 'ui:sticker'
+//        include 'ui:overlay'
+        include 'ui:transform'
+        include 'ui:adjustment'
+//        include 'ui:text-design'
+        include 'ui:video-composition'
+        include 'ui:video-library'
+        include 'ui:audio-composition'
+
+        // Add the serializer if you need
+        include 'backend:serializer'
+
+        // Allow Background Encoding [Optional]
+        include 'backend:headless'
+
+        // Add asset packs if you need
+        include 'assets:font-basic'
+//        include 'assets:frame-basic'
+        include 'assets:filter-basic'
+//        include 'assets:overlay-basic'
+        include 'assets:sticker-shapes'
+        include 'assets:sticker-emoticons'
+        include 'assets:sticker-animated'
+
+        // Add animated sticker support
+        include 'backend:sticker-animated'
+
+        // Add smart sticker support
+        include 'backend:sticker-smart'
+    }
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.ppfriends.pp.vodsdkbackgroundtest"
+        minSdk 23
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue 'string', 'pesdk_version', "v$pesdk_version"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+
+    //  exoPlayer
+    def exoplayer_version = '2.16.0'
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer_version"
+}
